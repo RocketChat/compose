@@ -21,34 +21,6 @@ services:
     # depends_on:
     #   mongodb-init-container:
     #     condition: service_completed_successfully
-    entrypoint: sh
-    command:
-      - -c
-      - |
-        protocol=$(echo $$MONGO_URL | awk -F'://' '{print $$1}')
-        if [ "$$protocol" = "mongodb+srv" ]; then
-          echo "=====> MongoDB is using SRV protocol, skipping healthcheck before attempting to start rocket.chat ...";
-          exec node main.js;
-        fi
-        host_port=$(echo $$MONGO_URL | awk -F/ '{print $$3}')
-        if echo $$host_port | grep -q @; then
-          host_port=$(echo $$host_port | awk -F@ '{print $$2}')
-        fi
-        echo "=====> host_port: $$host_port";
-        host=$${host_port%%:*}
-        port=$${host_port##*:}
-        port=$${port:-27017}
-        echo "=====> Waiting for MongoDB ($$host:$$port) to be ready before starting Rocket.Chat...";
-        for i in $(seq 1 60); do
-          if nc -z $$host $$port >/dev/null 2>&1; then
-            echo "=====> MongoDB is up - starting Rocket.Chat";
-            exec node main.js;
-          fi;
-          echo "=====> MongoDB not ready yet, retrying in 5 seconds...";
-          sleep 5;
-        done;
-        echo "=====> Giving up waiting for MongoDB after 5 minutes";
-        exit 1
     expose:
       - ${PORT:-3000}
       - ${METRICS_PORT:-9458}
