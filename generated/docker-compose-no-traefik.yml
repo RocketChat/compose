@@ -18,6 +18,7 @@ services:
       MONGO_URL: ${MONGO_URL:-mongodb://mongodb:27017/rocketchat?replicaSet=rs0}
       TRANSPORTER: "${NATS_URL-monolith+nats://nats:4222}"
       INSTANCE_IP: "${INSTANCE_IP:-}"
+      ROCKETCHAT_LICENSE: ${ROCKETCHAT_LICENSE:-}
     # depends_on:
     #   mongodb-init-container:
     #     condition: service_completed_successfully
@@ -29,12 +30,12 @@ services:
       - "${BIND_IP:-0.0.0.0}:${METRICS_PORT:-9458}:${METRICS_PORT:-9458}"
     logging:
       driver: "json-file"
-      # healthcheck:
-      #   test: ["CMD", "nc", "-zv", "-w", "10", "rocketchat", "${PORT:-3000}"]
-      #   interval: 30s
-      #   timeout: 10s
-      #   retries: 10
-      #   start_period: 30s
+    # healthcheck:
+    #   test: ["CMD", "nc", "-zv", "-w", "10", "rocketchat", "${PORT:-3000}"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 10
+    #   start_period: 30s
   mongodb-fix-permission-container:
     image: docker.io/mongodb/mongodb-community-server:${MONGODB_VERSION:-8.2}-ubi8
     restart: on-failure
