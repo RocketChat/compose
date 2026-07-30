@@ -18,6 +18,7 @@ services:
       MONGO_URL: ${MONGO_URL:-mongodb://mongodb:27017/rocketchat?replicaSet=rs0}
       TRANSPORTER: "${NATS_URL-monolith+nats://nats:4222}"
       INSTANCE_IP: "${INSTANCE_IP:-}"
+      ROCKETCHAT_LICENSE: ${ROCKETCHAT_LICENSE:-}
     # depends_on:
     #   mongodb-init-container:
     #     condition: service_completed_successfully
